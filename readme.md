@@ -1,150 +1,58 @@
-# WorkInSync — Hybrid Facility Planning Dashboard
+# WorkInSync Hybrid Seat Planning
 
-A submission for the **Technical Account Manager / Implementation Intern** role at WorkInSync (by MoveInSync), Bangalore.
+A small, browser-based planning dashboard for a straightforward workplace question: **how many desks should support 2,000 employees who come to the office three days a week across three locations?**
 
-The brief was simple to read and hard to answer well: *2,000 people, 3 offices in 3 countries, 3 days a week in office — how many seats do we actually need?*
+The short answer is **1,400 seats as a starting plan**. It reduces the dedicated-seat baseline by 600 desks while keeping 200 seats above the simple weekday-average attendance. The recommendation is a planning scenario, not a final lease or office-by-office allocation.
 
-This repo is my attempt at that answer. It's a working dashboard, not a slide deck.
+## The decision in numbers
 
----
+| Planning case | Seats | Seats per employee | Fewer than 2,000 dedicated desks | What it means |
+| --- | ---: | ---: | ---: | --- |
+| Lean | 1,200 | 0.60 | 800 (40%) | Matches the average weekday attendance; leaves no average-day cushion. Peak-day demand must be managed closely. |
+| **Recommended** | **1,400** | **0.70** | **600 (30%)** | Adds 200 seats above the average weekday attendance and gives a practical starting point for local validation. |
+| Conservative | 1,500 | 0.75 | 500 (25%) | Keeps more room for demand variation, with a smaller reduction in desk count. |
 
-## The Problem, Restated
+### Where the 1,200-person average comes from
 
-A facility manager staring at 2,000 desks on a spreadsheet has two bad options:
+The brief assumes 2,000 employees each attend **3 days out of a 5-day work week**:
 
-1. **Keep all 2,000 desks** → pay for real estate that sits empty 60% of the week.
-2. **Cut too aggressively** → employees show up on Tuesday, can't find a seat, and the whole "return to office" story collapses.
+```text
+2,000 employees × 3 office days = 6,000 employee-days per week
+6,000 employee-days ÷ 5 weekdays = 1,200 people per weekday on average
+1,400 recommended seats − 1,200 average attendees = 200 seats above the average
+2,000 dedicated desks − 1,400 recommended seats = 600 fewer desks (30%)
+```
 
-The right answer lives somewhere in the middle. Finding that middle is what this project is about.
+An average is not a peak forecast. If attendance clusters on Tuesday through Thursday, the busiest day can be materially higher than 1,200. The 1,400-seat case is therefore a **recommendation to validate**, not a claim that every office can safely operate at that number today. Before reducing space, compare several weeks of bookings and badge entries by location and weekday, account for teams that need to be onsite together, and preserve accessible and specialist workspaces.
 
----
+## What the dashboard shows
 
-## How I Approached It
+- **Dashboard:** the 2,000-person planning brief, the 1,400-seat recommendation, and the difference from a dedicated-seat setup.
+- **Scenario selector:** compare 1,200, 1,400, and 1,500 seats. The occupancy charts show illustrative weekday patterns to make the trade-offs visible; they are not company attendance data.
+- **Seat-footprint chart:** compares the selected scenario with 2,000 dedicated desks. It does not estimate rent or claim a specific cash saving.
+- **Experience guardrails:** suggested service targets for desk availability, booking use, and satisfaction. They are targets to discuss, not measured results.
+- **Trends and resources:** explain why a weekly average is not enough to set a seat count and provide links for further reading.
+- **Action center:** add one of four suggested workstreams or create a custom action, then mark it complete or reopen it. The action list is saved in this browser with `localStorage`; it does not sync to a task system or another device.
 
-I'll be upfront — I didn't invent a new formula. The math here is grounded in four management ideas that have been quietly shaping operations for decades:
+## Assumptions and limits
 
-### 1. Lean Thinking — Eliminate *Muda* (Waste)
+This is a portfolio-level exercise built from the stated inputs: **2,000 employees, 3 offices, and 3 in-office days per employee each week**. It does not include employee counts by location, actual attendance history, floor plans, lease costs, room mix, team schedules, accessibility requirements, or WorkInSync customer data.
 
-Toyota's production system calls waste "muda" — anything that consumes resources without creating value. In a hybrid office, an unused desk is muda. Pure, unapologetic muda.
+For that reason, the dashboard’s weekday curves and experience targets are illustrative. They help compare options, but should not be presented as observations. The 0.60–0.75 seat-to-employee range is a scenario range rather than a universal industry rule. A final recommendation should use each office’s observed peak demand and an agreed service buffer.
 
-At 3 days a week, a dedicated desk sits idle **60% of the time**. That's the number that should make any facilities lead uncomfortable. Lean says: don't eliminate the desk, eliminate the *idleness*. That's exactly what desk-sharing does.
+The plotted weekday curves are a worked example that distributes roughly **6,000 employee-days** across the week. The 1,200-seat case assumes attendance can be perfectly spread, so all seats are occupied each weekday on average; the 1,400- and 1,500-seat cases show different illustrative peaks. The displayed percentages are rounded. Replace these curves with actual local data before using them to make capacity decisions.
 
-### 2. Theory of Constraints — Plan for the Bottleneck
+One useful reference point is JLL’s *Global Occupancy Planning Benchmark Report 2025*, based on 99 organizations representing 745 million square feet. It reports global actual office utilization of 54% and a 79% utilization target. Those figures describe the report’s respondents; they are context for measuring utilization, not inputs to the 1,400-seat calculation. [Read the report (PDF)](https://www.jll.com/content/dam/legacy/jll-com/documents/pdf/research/global/25-insights-global-occupancy-planning-benchmark-report-2025.pdf).
 
-Eliyahu Goldratt's insight was that a system is only as fast as its slowest step. For hybrid offices, the bottleneck isn't the weekly average — **it's Tuesday.**
+CBRE’s 2025 Americas survey also illustrates the difference between average and peak conditions: 73% of respondents placed peak-day utilization in the 61–100% range, compared with 34% for average utilization. This is U.S.-focused survey context, not a direct estimate for the three offices in this exercise. [Read the survey](https://www.cbre.com/insights/reports/2025-americas-office-occupier-sentiment-survey).
 
-Peak days (Tue–Thu) hit 85–95% attendance. Friday sits at 15–25%. If you size for the average, Tuesday becomes a disaster. If you size for Tuesday, you over-provision the rest of the week. The whole exercise is about finding the right buffer above the constraint.
+## Run locally
 
-### 3. The Balanced Scorecard — KPIs That Actually Reflect Value
+No build step or package installation is needed. Open `index.html` in a modern browser. The dashboard loads Tailwind CSS and Chart.js from CDNs, so an internet connection is required for styling and charts.
 
-Kaplan & Norton argued that financial metrics alone give you a warped view of an organization. The same applies here. "Cost per seat" is one lens. But employee experience, booking compliance, and space utilization are equally important. That's why the dashboard tracks **four KPI families**: Space, Cost, Experience, Operations.
+## Files
 
-### 4. OKRs — Target and Stretch
-
-The three scenarios (Target, Best, Worst) mirror the OKR philosophy: you need a *committed* goal and an *aspirational* one. Target (1,400) is the committed goal. Best Case (1,200) is the stretch. Worst Case (1,500) is the retreat position if adoption lags.
-
----
-
-## The Core Calculation
-
-Nothing fancy. Just honest arithmetic with a defensible range:
-
-| Scenario | Ratio | Seats | Meaning |
-|---|---|---|---|
-| **Best Case** | 0.60 | **1,200** | Aggressive sharing. Works only with high adoption. |
-| **Target** | 0.70 | **1,400** | Balanced. 10–15% buffer above peak. Recommended. |
-| **Worst Case** | 0.75 | **1,500** | Conservative. Cost savings shrink. "Zombie desks" appear. |
-
-**Recommended: 1,400 seats across the 3 offices.**
-
-Why 1,400? Because it sits above the peak-day 90th percentile demand and still leaves a real buffer. It respects the constraint (Tuesday) without punishing Friday.
-
----
-
-## What the Dashboard Actually Does
-
-I built this as a single-file HTML dashboard so it's portable and easy to demo.
-
-### Pages
-
-- **Dashboard** — KPIs, occupancy trend, cost comparison, employee experience chart. All driven by real numbers.
-- **Scenarios** — Side-by-side breakdown of Target / Best / Worst with tradeoffs.
-- **Trends** — Explains the bimodal pattern and why average is a lie.
-- **Resources** — Every source used, with clickable DOIs and URLs.
-- **Action Center** — Real facilities tasks, each with a CTA button.
-
-### Interactions
-
-- **Scenario toggling** — Click Target / Best / Worst and every chart, KPI, and metric redraws with a 1.4-second animation.
-- **Hover tooltips** — Every KPI card explains its own logic. No guessing what "Health: 14%" means.
-- **Toast notifications** — Clicking an action button gives feedback. Small thing, but it makes the dashboard feel alive.
-
-### Design Choices
-
-I went with a **light grey-blue theme** because facility managers stare at screens all day. Dark themes look cool in screenshots but tire the eyes in practice. The glassmorphic panels give depth without relying on heavy shadows — a design pattern borrowed from Apple's Human Interface Guidelines.
-
-Every element animates in — nothing pops. Charts ease in over 1.4 seconds. Cards bounce in staggered. This isn't decoration; it's *progressive disclosure*. The eye is guided to the most important metric first.
-
----
-
-## KPI Framework — The Real Answer to "How Do You Measure Success?"
-
-This is where most candidates go wrong. They list metrics without explaining *why* they matter. Here's the reasoning behind each one:
-
-### Space Utilization
-- **Peak-Day Desk Utilization (85–90%)** — The single most important number. If it's too low, you're wasting money. Too high, you're frustrating people.
-- **Booking-to-Usage Ratio (>85%)** — Measures no-shows. If people book and don't show, the system is broken.
-- **Average Weekly Utilization (55–65%)** — Context, not a target. A useful number to sanity-check against peak.
-
-### Financial
-- **Cost per Used Seat** — Not "cost per assigned seat." Only count desks people actually sit at.
-- **Real Estate Spend as % of Revenue** — The only number your CFO cares about.
-
-### Employee Experience
-- **Desk Availability Rate (>95%)** — Did people find a desk when they needed one?
-- **Satisfaction Score (>4.0/5)** — Survey-based. Simple, blunt, honest.
-
-### Operations
-- **Meeting Room Utilization (50–70%)** — Meeting rooms are usually the most under-utilized asset.
-- **No-Show Rate (<15%)** — Booking without showing up is the hybrid equivalent of a wasted conference room.
-
----
-
-## References
-
-I leaned on four industry reports and three academic papers:
-
-- **JLL Global Occupancy Planning Benchmark 2025** — Peak utilization 80% vs. 54% average
-- **CBRE Americas Office Occupier Sentiment Survey 2025** — 73% report peak-day capacity issues
-- **Kastle Systems Back-to-Work Barometer 2025** — Tuesday peaks at 95.5% in A+ buildings
-- **Building and Environment (2025)** — Data-driven framework for seat occupancy prediction
-- **Springer (2025/2026)** — Hot-desking allocation algorithm using matching theory
-- **SAGE (2025)** — MILP model for optimizing hybrid work schedules
-- **Density.io, YAROOMS, Skedda, Deskbird** — Practitioner sources on desk ratios
-
-All links and DOIs are live in the **Resources** page of the dashboard.
-
----
-
-## Assumptions and Honest Caveats
-
-I'd rather flag these now than have someone find them later:
-
-1. **The 0.6–0.75 ratio range is an industry benchmark, not a universal law.** It works for typical hybrid setups. A company with a strong in-office culture might need 0.85. A fully remote-first company could go to 0.4.
-2. **Country-specific patterns are not modeled.** The 3 offices have different commute cultures, holidays, and norms. The dashboard recommends the *total*, but each office should run its own peak-day analysis.
-3. **Adoption risk is real.** The Best Case (1,200) only works if employees actually comply with hoteling. If they don't, you slide toward the Worst Case.
-4. **The KPI targets are directional.** They're based on benchmarks from the sources above — not on WorkInSync's own internal data (which I don't have access to).
-
----
-
-## How to Run It
-
-1. Clone the repo.
-2. Open `index.html` in any modern browser.
-3. That's it. No build step, no dependencies to install.
-
-The dashboard uses Tailwind (CDN) and Chart.js (CDN), so an internet connection is needed on first load.
-
----
-
-## File Structure
+| File | Purpose |
+| --- | --- |
+| `index.html` | Single-page dashboard, scenario data, charts, and interactions |
+| `readme.md` | Recommendation, arithmetic, assumptions, and run instructions |
