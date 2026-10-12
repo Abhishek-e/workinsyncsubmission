@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1355,3 +1356,1235 @@
 </script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkInSync — Facility Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    * { box-sizing: border-box; }
+
+    :root {
+        /* GitHub Dark palette */
+        --gh-canvas:     #0d1117;
+        --gh-canvas-sub: #161b22;
+        --gh-canvas-inset: #010409;
+        --gh-border:     rgba(240, 246, 252, 0.15);
+        --gh-border-strong: rgba(240, 246, 252, 0.28);
+        --gh-fg:         #c9d1d9;
+        --gh-fg-emph:    #f0f6fc;
+        --gh-fg-muted:   #8b949e;
+        --gh-accent:     #58a6ff;
+        --gh-accent-emph:#1f6feb;
+        --gh-accent-sub: #79c0ff;
+        --gh-success:    #3fb950;
+        --gh-attention:  #d29922;
+        --gh-danger:     #f85149;
+        --gh-purple:     #bc8cff;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+        background: var(--gh-canvas);
+        color: var(--gh-fg);
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+        font-feature-settings: 'cv02', 'cv03', 'cv04';
+        letter-spacing: -0.01em;
+        line-height: 1.5;
+    }
+
+    /* ============ SUBTLE BACKGROUND GLOW (GitHub-style) ============ */
+    .bg-orbs {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+        background:
+            radial-gradient(ellipse at 15% 0%, rgba(31, 111, 235, 0.10), transparent 55%),
+            radial-gradient(ellipse at 85% 100%, rgba(88, 166, 255, 0.06), transparent 55%);
+    }
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.22;
+        animation: floatOrb 24s ease-in-out infinite;
+    }
+    .orb-1 { width: 520px; height: 520px; background: #1f6feb; top: -180px; left: -120px; animation-delay: 0s; }
+    .orb-2 { width: 480px; height: 480px; background: #58a6ff; top: 15%; right: -180px; animation-delay: -6s; }
+    .orb-3 { width: 420px; height: 420px; background: #388bfd; bottom: -140px; left: 25%; animation-delay: -12s; }
+    .orb-4 { width: 360px; height: 360px; background: #1f6feb; bottom: 15%; right: 15%; animation-delay: -18s; opacity: 0.15; }
+
+    @keyframes floatOrb {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(50px, -35px) scale(1.08); }
+        66% { transform: translate(-35px, 45px) scale(0.94); }
+    }
+
+    /* ============ GITHUB-STYLE PANELS ============ */
+    .glass {
+        background: var(--gh-canvas-sub);
+        border: 1px solid var(--gh-border);
+        border-radius: 12px;
+        box-shadow:
+            0 4px 16px rgba(0, 0, 0, 0.55),
+            0 1px 3px rgba(0, 0, 0, 0.4);
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        z-index: 1;
+    }
+    .glass:hover {
+        border-color: var(--gh-border-strong);
+        box-shadow:
+            0 10px 32px rgba(0, 0, 0, 0.75),
+            0 2px 8px rgba(0, 0, 0, 0.5),
+            0 0 0 1px rgba(88, 166, 255, 0.1);
+        transform: translateY(-3px);
+    }
+    .glass-static { transition: none; }
+    .glass-static:hover { transform: none; }
+
+    /* ============ ENTRANCE ANIMATIONS ============ */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInScale { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+    @keyframes slideInLeft { from { opacity: 0; transform: translateX(-32px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(32px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    @keyframes bounceIn { 0% { opacity: 0; transform: scale(0.4); } 55% { opacity: 1; transform: scale(1.04); } 75% { transform: scale(0.97); } 100% { transform: scale(1); } }
+
+    .anim-fade-up { animation: fadeInUp 0.55s cubic-bezier(0.4, 0, 0.2, 1) both; }
+    .anim-scale { animation: fadeInScale 0.5s cubic-bezier(0.4, 0, 0.2, 1) both; }
+    .anim-slide-left { animation: slideInLeft 0.55s cubic-bezier(0.4, 0, 0.2, 1) both; }
+    .anim-slide-right { animation: slideInRight 0.55s cubic-bezier(0.4, 0, 0.2, 1) both; }
+    .anim-bounce { animation: bounceIn 0.65s cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+    .d-1 { animation-delay: 0.05s; } .d-2 { animation-delay: 0.1s; } .d-3 { animation-delay: 0.15s; }
+    .d-4 { animation-delay: 0.2s; } .d-5 { animation-delay: 0.25s; } .d-6 { animation-delay: 0.3s; }
+    .d-7 { animation-delay: 0.35s; } .d-8 { animation-delay: 0.4s; }
+
+    /* ============ KEYWORD HIGHLIGHTS ============ */
+    .kw {
+        color: var(--gh-accent-sub);
+        font-weight: 600;
+        background: linear-gradient(180deg, transparent 62%, rgba(88, 166, 255, 0.22) 62%);
+        padding: 0 2px;
+    }
+    .kw-blue {
+        color: var(--gh-accent);
+        font-weight: 600;
+        background: linear-gradient(180deg, transparent 62%, rgba(88, 166, 255, 0.22) 62%);
+        padding: 0 2px;
+    }
+    .kw-cyan {
+        color: #79c0ff;
+        font-weight: 600;
+        background: linear-gradient(180deg, transparent 62%, rgba(121, 192, 255, 0.2) 62%);
+        padding: 0 2px;
+    }
+    .kw-num {
+        display: inline-block;
+        color: #ffffff;
+        font-weight: 700;
+        background: linear-gradient(135deg, #1f6feb, #388bfd);
+        padding: 2px 10px;
+        border-radius: 6px;
+        font-size: 0.92em;
+        letter-spacing: 0.01em;
+        box-shadow: 0 2px 8px rgba(31, 111, 235, 0.4);
+    }
+    .kw-num-alt {
+        background: linear-gradient(135deg, #388bfd, #58a6ff);
+        box-shadow: 0 2px 8px rgba(88, 166, 255, 0.4);
+    }
+    .kw-num-cyan {
+        background: linear-gradient(135deg, #1f6feb, #79c0ff);
+        box-shadow: 0 2px 8px rgba(121, 192, 255, 0.4);
+    }
+    .kw-num-rose {
+        background: linear-gradient(135deg, #da3633, #f85149);
+        box-shadow: 0 2px 8px rgba(248, 81, 73, 0.4);
+    }
+    .kw-num-indigo {
+        background: linear-gradient(135deg, #8957e5, #bc8cff);
+        box-shadow: 0 2px 8px rgba(188, 140, 255, 0.4);
+    }
+
+    /* ============ KPI CARDS ============ */
+    .kpi-card { position: relative; cursor: pointer; overflow: visible; }
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(88, 166, 255, 0.9), transparent 55%, rgba(121, 192, 255, 0.7));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.4s;
+        pointer-events: none;
+    }
+    .kpi-card:hover::before { opacity: 1; }
+
+    .kpi-card .tooltip-content {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        bottom: 110%;
+        left: 50%;
+        transform: translateX(-50%) translateY(8px);
+        width: 300px;
+        background: var(--gh-canvas-inset);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 10px;
+        padding: 14px;
+        z-index: 100;
+        font-size: 12px;
+        color: var(--gh-fg);
+        line-height: 1.6;
+        box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.06);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+    }
+    .kpi-card:hover .tooltip-content { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+    .kpi-card .tooltip-content::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 7px solid transparent;
+        border-top-color: var(--gh-canvas-inset);
+    }
+
+    /* ============ NAV ============ */
+    .nav-link {
+        color: var(--gh-fg-muted);
+        background: transparent;
+        border: 1px solid transparent;
+        padding: 9px 16px;
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 500;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        letter-spacing: -0.005em;
+    }
+    .nav-link:hover {
+        color: var(--gh-fg-emph);
+        background: rgba(255, 255, 255, 0.06);
+        border-color: var(--gh-border);
+    }
+    .nav-link.active {
+        color: #ffffff;
+        background: linear-gradient(135deg, var(--gh-accent-emph), #388bfd);
+        border-color: rgba(88, 166, 255, 0.55);
+        box-shadow: 0 6px 20px rgba(31, 111, 235, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    /* ============ SCENARIO BUTTONS ============ */
+    .scenario-btn {
+        border: 1px solid var(--gh-border);
+        color: var(--gh-fg);
+        background: rgba(255, 255, 255, 0.04);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        font-weight: 500;
+        letter-spacing: -0.005em;
+    }
+    .scenario-btn:hover {
+        background: rgba(88, 166, 255, 0.12);
+        border-color: rgba(88, 166, 255, 0.5);
+        transform: translateY(-2px);
+        color: var(--gh-fg-emph);
+    }
+    .scenario-btn.active {
+        background: linear-gradient(135deg, var(--gh-accent-emph), #388bfd);
+        color: #ffffff;
+        border-color: rgba(88, 166, 255, 0.6);
+        box-shadow: 0 8px 22px rgba(31, 111, 235, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    /* ============ CTA BUTTONS (GitHub-style) ============ */
+    .cta-btn {
+        background: linear-gradient(180deg, #238636, #2ea043);
+        color: #ffffff;
+        border: 1px solid rgba(240, 246, 252, 0.15);
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: 0 1px 0 rgba(27, 31, 36, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        letter-spacing: -0.005em;
+    }
+    .cta-btn:hover {
+        background: linear-gradient(180deg, #2ea043, #3fb950);
+        box-shadow: 0 4px 14px rgba(63, 185, 80, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+    }
+    .cta-btn:active { transform: translateY(0); }
+
+    .cta-btn-outline {
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--gh-fg-emph);
+        border: 1px solid var(--gh-border);
+        box-shadow: none;
+    }
+    .cta-btn-outline:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--gh-border-strong);
+        color: #ffffff;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    }
+
+    .cta-btn-blue {
+        background: linear-gradient(180deg, #1f6feb, #388bfd);
+        border-color: rgba(88, 166, 255, 0.4);
+        box-shadow: 0 1px 0 rgba(27, 31, 36, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    .cta-btn-blue:hover {
+        background: linear-gradient(180deg, #388bfd, #58a6ff);
+        box-shadow: 0 4px 14px rgba(88, 166, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .chart-container { position: relative; height: 210px; width: 100%; }
+
+    .section { display: none; }
+    .section.active { display: block; animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    /* ============ PROGRESS BARS ============ */
+    .progress-bar {
+        position: relative;
+        overflow: hidden;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .progress-fill {
+        height: 100%;
+        border-radius: 9999px;
+        transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    .progress-fill::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+        background-size: 200% 100%;
+        animation: shimmer 2.8s infinite;
+    }
+
+    /* ============ TASK CARDS ============ */
+    .task-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    .task-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 3px;
+        background: linear-gradient(180deg, var(--gh-accent), #79c0ff);
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .task-card:hover::before { transform: scaleY(1); }
+    .task-card:hover {
+        background: rgba(88, 166, 255, 0.06);
+        transform: translateX(4px);
+        border-color: rgba(88, 166, 255, 0.35);
+    }
+
+    /* ============ REF LINKS ============ */
+    .ref-link {
+        color: var(--gh-accent);
+        text-decoration: none;
+        border-bottom: 1px dashed rgba(88, 166, 255, 0.45);
+        transition: all 0.2s;
+        padding-bottom: 1px;
+        font-weight: 500;
+    }
+    .ref-link:hover {
+        color: var(--gh-accent-sub);
+        border-bottom-color: var(--gh-accent-sub);
+        border-bottom-style: solid;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+    }
+    .badge-doi { background: rgba(88, 166, 255, 0.15); color: #79c0ff; border: 1px solid rgba(88, 166, 255, 0.35); }
+    .badge-url { background: rgba(63, 185, 80, 0.15); color: #56d364; border: 1px solid rgba(63, 185, 80, 0.35); }
+    .badge-pdf { background: rgba(188, 140, 255, 0.15); color: #d2a8ff; border: 1px solid rgba(188, 140, 255, 0.35); }
+
+    /* ============ TOAST ============ */
+    .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--gh-canvas-sub);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-left: 4px solid var(--gh-accent);
+        border-radius: 10px;
+        padding: 14px 20px;
+        color: var(--gh-fg-emph);
+        font-size: 13.5px;
+        font-weight: 500;
+        box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.06);
+        transform: translateY(130px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ============ SCROLLBAR ============ */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: var(--gh-canvas); }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 6px; border: 2px solid var(--gh-canvas); }
+    ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+
+    .lift { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s, border-color 0.3s; }
+    .lift:hover { transform: translateY(-4px); }
+
+    /* Section divider accent */
+    .accent-bar {
+        display: inline-block;
+        width: 4px;
+        height: 22px;
+        background: linear-gradient(180deg, var(--gh-accent), #79c0ff);
+        border-radius: 9999px;
+        box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+    }
+
+    /* ============ SPOTLIGHT CARD (for borders) ============ */
+    .spotlight {
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        box-shadow:
+            0 8px 28px rgba(0, 0, 0, 0.7),
+            0 2px 8px rgba(0, 0, 0, 0.5),
+            0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+    }
+
+    @media (max-width: 768px) {
+        .orb { filter: blur(80px); opacity: 0.15; }
+        .kpi-card .tooltip-content { width: 240px; }
+    }
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND -->
+<div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+</div>
+
+<div class="relative z-10 p-4 md:p-8 max-w-[1600px] mx-auto min-h-screen">
+
+    <!-- ==================== NAVIGATION ==================== -->
+    <nav class="glass glass-static anim-fade-up flex items-center gap-2 mb-8 p-2.5 flex-wrap">
+        <div class="flex items-center gap-2.5 px-3 py-1.5 mr-3">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-blue-500/40">W</div>
+            <div class="hidden md:block">
+                <div class="font-bold text-white text-sm leading-tight">WorkInSync</div>
+                <div class="text-[10px] text-blue-400/90 uppercase tracking-wider font-semibold">Facility Ops</div>
+            </div>
+        </div>
+        <button onclick="showSection('dashboard')" id="nav-dashboard" class="nav-link active">📊 Dashboard</button>
+        <button onclick="showSection('resources')" id="nav-resources" class="nav-link">📚 Resources</button>
+        <button onclick="showSection('scenarios')" id="nav-scenarios" class="nav-link">🔀 Scenarios</button>
+        <button onclick="showSection('trends')" id="nav-trends" class="nav-link">📈 Trends</button>
+        <button onclick="showSection('tasks')" id="nav-tasks" class="nav-link ml-auto">⚡ Action Center</button>
+    </nav>
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <div id="section-dashboard" class="section active">
+
+        <!-- HEADER + CONTROLS -->
+        <div class="glass glass-static spotlight anim-fade-up d-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-5 p-6 mb-8">
+            <div>
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-400 bg-clip-text text-transparent tracking-tight">Facility Dashboard</h1>
+                <p class="text-[13px] text-slate-400 mt-1.5">3 Offices • 2,000 Employees • 3 Days/Week Hybrid Model</p>
+            </div>
+            <div class="flex gap-2.5 flex-wrap">
+                <button onclick="updateScenario('target')" id="btn-target" class="scenario-btn active px-4 py-2 rounded-lg text-[13px]">🎯 Target (1,400)</button>
+                <button onclick="updateScenario('best')" id="btn-best" class="scenario-btn px-4 py-2 rounded-lg text-[13px]">✅ Best (1,200)</button>
+                <button onclick="updateScenario('worst')" id="btn-worst" class="scenario-btn px-4 py-2 rounded-lg text-[13px]">⚠️ Worst (1,500)</button>
+            </div>
+        </div>
+
+        <!-- KPI CARDS -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-5 mb-8">
+            <div class="glass kpi-card anim-bounce d-1 p-5">
+                <div class="flex justify-between items-center text-slate-500 text-[10.5px] mb-3 uppercase tracking-wider font-semibold">
+                    <span>Health</span> <span class="text-blue-400">ⓘ</span>
+                </div>
+                <div class="text-3xl font-bold text-blue-400 tracking-tight" id="health-val">14%</div>
+                <div class="text-[11px] text-slate-500 mt-1.5">Ahead of schedule</div>
+                <div class="tooltip-content">
+                    <strong class="text-blue-300">Health — 14% Ahead of Schedule</strong><br><br>
+                    Measures project health against planned rollout. Positive = ahead of schedule. Calculated as <strong class="text-white">(Actual − Planned) × 100</strong>. Target: ≥ 0%.
+                </div>
+            </div>
+            <div class="glass kpi-card anim-bounce d-2 p-5">
+                <div class="flex justify-between items-center text-slate-500 text-[10.5px] mb-3 uppercase tracking-wider font-semibold">
+                    <span>Tasks</span> <span class="text-blue-400">ⓘ</span>
+                </div>
+                <div class="text-3xl font-bold text-white tracking-tight" id="tasks-val">12</div>
+                <div class="text-[11px] text-slate-500 mt-1.5">Pending completion</div>
+                <div class="tooltip-content">
+                    <strong class="text-white">Tasks — 12 Pending</strong><br><br>
+                    Open action items: <strong class="text-blue-300">desk reconfiguration</strong>, signage, policy comms, vendor coordination. Target: &lt; 10 at any time.
+                </div>
+            </div>
+            <div class="glass kpi-card anim-bounce d-3 p-5">
+                <div class="flex justify-between items-center text-slate-500 text-[10.5px] mb-3 uppercase tracking-wider font-semibold">
+                    <span>Workload</span> <span class="text-blue-400">ⓘ</span>
+                </div>
+                <div class="text-3xl font-bold text-cyan-400 tracking-tight" id="workload-val">0</div>
+                <div class="text-[11px] text-slate-500 mt-1.5">Desks overdue</div>
+                <div class="tooltip-content">
+                    <strong class="text-cyan-300">Workload — 0 Overdue</strong><br><br>
+                    Desk setups, moves, or repairs past <strong class="text-white">SLA deadline</strong>. Zero = all SLAs maintained. Target: 0 at all times.
+                </div>
+            </div>
+            <div class="glass kpi-card anim-bounce d-4 p-5">
+                <div class="flex justify-between items-center text-slate-500 text-[10.5px] mb-3 uppercase tracking-wider font-semibold">
+                    <span>Progress</span> <span class="text-blue-400">ⓘ</span>
+                </div>
+                <div class="text-3xl font-bold text-white tracking-tight" id="progress-val">14%</div>
+                <div class="text-[11px] text-slate-500 mt-1.5">Complete</div>
+                <div class="tooltip-content">
+                    <strong class="text-white">Progress — 14%</strong><br><br>
+                    % of desk-optimization project complete (software rollout, desk removal, training). Target: <strong class="text-blue-300">100% by deadline</strong>.
+                </div>
+            </div>
+            <div class="glass kpi-card anim-bounce d-5 p-5">
+                <div class="flex justify-between items-center text-slate-500 text-[10.5px] mb-3 uppercase tracking-wider font-semibold">
+                    <span>Cost</span> <span class="text-blue-400">ⓘ</span>
+                </div>
+                <div class="text-3xl font-bold text-blue-400 tracking-tight" id="cost-val">42%</div>
+                <div class="text-[11px] text-slate-500 mt-1.5">Under budget</div>
+                <div class="tooltip-content">
+                    <strong class="text-blue-300">Cost — 42% Under Budget</strong><br><br>
+                    Real estate spend vs. approved budget. Calculated as <strong class="text-white">((Budget − Actual) ÷ Budget) × 100</strong>. Target: ≥ 0%.
+                </div>
+            </div>
+        </div>
+
+        <!-- MIDDLE ROW -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="glass anim-slide-left d-3 p-6">
+                <h3 class="text-slate-100 font-semibold mb-5 flex items-center gap-3 text-[15px]">
+                    <span class="accent-bar"></span> Seat Allocation Status
+                </h3>
+                <div class="flex justify-center items-center h-48">
+                    <canvas id="seatDonutChart"></canvas>
+                </div>
+                <div class="flex justify-center gap-5 mt-5 text-[11.5px] text-slate-400 flex-wrap">
+                    <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-md shadow-blue-500/50"></span> Min (1,200)</div>
+                    <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-md shadow-cyan-400/50"></span> Target (1,400)</div>
+                    <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-indigo-400 shadow-md shadow-indigo-400/50"></span> Max (1,500)</div>
+                </div>
+            </div>
+            <div class="glass anim-slide-right d-3 p-6">
+                <h3 class="text-slate-100 font-semibold mb-5 flex items-center gap-3 text-[15px]">
+                    <span class="accent-bar"></span> Office Readiness
+                </h3>
+                <div class="space-y-5 mt-6">
+                    <div>
+                        <div class="flex justify-between text-[13px] mb-2.5"><span class="text-slate-300">🇮🇳 Bangalore Office</span><span class="text-blue-300 font-semibold">100%</span></div>
+                        <div class="progress-bar h-2.5"><div class="progress-fill bg-gradient-to-r from-blue-500 to-blue-400" style="width:100%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[13px] mb-2.5"><span class="text-slate-300">🇬🇧 London Office</span><span class="text-cyan-400 font-semibold">80%</span></div>
+                        <div class="progress-bar h-2.5"><div class="progress-fill bg-gradient-to-r from-cyan-500 to-cyan-400" style="width:80%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[13px] mb-2.5"><span class="text-slate-300">🇺🇸 New York Office</span><span class="text-indigo-400 font-semibold">10%</span></div>
+                        <div class="progress-bar h-2.5"><div class="progress-fill bg-gradient-to-r from-indigo-500 to-indigo-400" style="width:10%"></div></div>
+                    </div>
+                </div>
+                <div class="mt-6 text-[11px] text-slate-500 border-t border-white/10 pt-3.5">* Progress reflects desk reduction and hoteling policy rollout per office.</div>
+            </div>
+        </div>
+
+        <!-- BOTTOM ROW -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass anim-fade-up d-4 p-6">
+                <h3 class="text-slate-100 font-semibold mb-5 flex items-center gap-3 text-[15px]">
+                    <span class="accent-bar"></span> Weekly Occupancy
+                </h3>
+                <div class="chart-container"><canvas id="occupancyLineChart"></canvas></div>
+                <p class="text-[11px] text-slate-500 mt-3">Peak days (Tue–Thu) dictate capacity planning.</p>
+            </div>
+            <div class="glass anim-fade-up d-5 p-6">
+                <h3 class="text-slate-100 font-semibold mb-5 flex items-center gap-3 text-[15px]">
+                    <span class="accent-bar"></span> Cost Analysis
+                </h3>
+                <div class="chart-container"><canvas id="costBarChart"></canvas></div>
+                <p class="text-[11px] text-slate-500 mt-3">Cost per used seat vs. Industry benchmark.</p>
+            </div>
+            <div class="glass anim-fade-up d-6 p-6">
+                <h3 class="text-slate-100 font-semibold mb-5 flex items-center gap-3 text-[15px]">
+                    <span class="accent-bar"></span> Employee Experience
+                </h3>
+                <div class="chart-container"><canvas id="expBarChart"></canvas></div>
+                <p class="text-[11px] text-slate-500 mt-3">Desk Availability • Booking Completion • Satisfaction.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== RESOURCES ==================== -->
+    <div id="section-resources" class="section">
+        <div class="glass glass-static spotlight p-6 md:p-7 mb-8 anim-fade-up">
+            <h2 class="text-2xl font-bold text-white mb-2.5 flex items-center gap-3">
+                <span class="accent-bar" style="height:26px;"></span>
+                Resources & References
+            </h2>
+            <p class="text-[13px] text-slate-400 mb-7">All sources used in this solution — clickable links and DOIs open in a new tab.</p>
+
+            <h3 class="text-[15px] font-semibold text-blue-300 mb-4 flex items-center gap-2">📊 Industry Benchmark Reports</h3>
+            <div class="space-y-4 mb-9">
+                <div class="glass anim-fade-up d-1 lift p-5">
+                    <div class="flex justify-between items-start flex-wrap gap-3 mb-2.5">
+                        <div class="flex-1 min-w-[200px]">
+                            <strong class="text-white text-[14.5px]">JLL Global Occupancy Planning Benchmark Report 2025</strong>
+                            <span class="badge badge-pdf ml-2">PDF</span>
+                        </div>
+                        <a href="https://www.jll.com/content/dam/legacy/jll-com/documents/pdf/research/global/25-insights-global-occupancy-planning-benchmark-report-2025.pdf" target="_blank" class="cta-btn cta-btn-blue text-xs">Open →</a>
+                    </div>
+                    <p class="text-[12.5px] text-slate-400 leading-relaxed">99 organizations, 745M sq ft. <span class="kw">Peak utilization 80%</span> vs. <span class="kw-blue">54% average</span>. 77% hybrid programs.</p>
+                </div>
+                <div class="glass anim-fade-up d-2 lift p-5">
+                    <div class="flex justify-between items-start flex-wrap gap-3 mb-2.5">
+                        <div class="flex-1 min-w-[200px]">
+                            <strong class="text-white text-[14.5px]">CBRE 2025 Americas Office Occupier Sentiment Survey</strong>
+                            <span class="badge badge-url ml-2">URL</span>
+                        </div>
+                        <a href="https://www.cbre.com/insights/reports/2025-americas-office-occupier-sentiment-survey" target="_blank" class="cta-btn cta-btn-blue text-xs">Open →</a>
+                    </div>
+                    <p class="text-[12.5px] text-slate-400 leading-relaxed"><span class="kw">72% meet attendance goals</span>; <span class="kw-cyan">73% report peak-day capacity issues</span>. Assigned seating dropped 56% → 25%.</p>
+                </div>
+                <div class="glass anim-fade-up d-3 lift p-5">
+                    <div class="flex justify-between items-start flex-wrap gap-3 mb-2.5">
+                        <div class="flex-1 min-w-[200px]">
+                            <strong class="text-white text-[14.5px]">Kastle Systems Back-to-Work Barometer 2025</strong>
+                            <span class="badge badge-url ml-2">URL</span>
+                        </div>
+                        <a href="https://www.kastle.com/resource/kastle-back-to-work-barometer-hits-all-time-post-pandemic-highs/" target="_blank" class="cta-btn cta-btn-blue text-xs">Open →</a>
+                    </div>
+                    <p class="text-[12.5px] text-slate-400 leading-relaxed">A+ buildings at <span class="kw">78.8% weekly average</span>; <span class="kw-cyan">Tuesday peak at 95.5%</span>. 10-City avg 56.3%.</p>
+                </div>
+            </div>
+
+            <h3 class="text-[15px] font-semibold text-blue-300 mb-4 flex items-center gap-2">🎓 Academic Papers</h3>
+            <div class="space-y-4 mb-9">
+                <div class="glass anim-fade-up d-4 lift p-5">
+                    <div class="flex justify-between items-start flex-wrap gap-3 mb-2.5">
+                        <div class="flex-1 min-w-[200px]">
+                            <strong class="text-white text-[14.5px]">Environmental & spatial dynamics in a flexible workspace for hybrid work</strong>
+                            <span class="badge badge-doi ml-2">DOI</span>
+                        </div>
+                        <a href="https://doi.org/10.1016/j.buildenv.2025.112544" target="_blank" class="cta-btn cta-btn-blue text-xs">DOI →</a>
+                    </div>
+                    <p class="text-[12.5px] text-slate-400 leading-relaxed">Building and Environment, 2025. Data-driven framework predicting <span class="kw">seat occupancy</span> from design features.</p>
+                </div>
+                <div class="glass anim-fade-up d-5 lift p-5">
+                    <div class="flex justify-between items-start flex-wrap gap-3 mb-2.5">
+                        <div class="flex-1 min-w-[200px]">
+                            <strong class="text-white text-[14.5px]">Development for a stable seating allocation algorithm in hot-desking</strong>
+                            <span class="badge badge-doi ml-2">DOI</span>
+                        </div>
+                        <a href="https://doi.org/10.1007/s00170-025-17283-z" target="_blank" class="cta-btn cta-btn-blue text-xs">DOI →</a>
+                    </div>
+                    <p class="text-[12.5px] text-slate-400 leading-relaxed">Springer, 2025/2026. <span class="kw-blue">Matching theory</span> + network centrality for informal communication.</p>
+                </div>
+                <div class="glass anim-fade-up d-6 lift p-5">
+                    <div class="flex justify-between items-start flex-wrap gap-3 mb-2.5">
+                        <div class="flex-1 min-w-[200px]">
+                            <strong class="text-white text-[14.5px]">Scheduling in hybrid work environments: Maximizing employee interaction</strong>
+                            <span class="badge badge-doi ml-2">DOI</span>
+                        </div>
+                        <a href="https://doi.org/10.1177/18479790261416541" target="_blank" class="cta-btn cta-btn-blue text-xs">DOI →</a>
+                    </div>
+                    <p class="text-[12.5px] text-slate-400 leading-relaxed">SAGE, 2025. <span class="kw">MILP model</span> optimizing weekly hybrid schedules for interaction & satisfaction.</p>
+                </div>
+            </div>
+
+            <h3 class="text-[15px] font-semibold text-blue-300 mb-4 flex items-center gap-2">🛠️ Practitioner Sources</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="glass lift p-5">
+                    <strong class="text-white text-[13.5px]">Why the Best Occupancy Teams Are Ditching Desk Ratios</strong>
+                    <p class="text-[11px] text-blue-400/80 mt-1 mb-3">Density.io</p>
+                    <a href="https://density.io/resources/beyond-desk-sharing-ratios-new-occupancy-planning-metrics" target="_blank" class="ref-link text-[12.5px]">Open Article →</a>
+                </div>
+                <div class="glass lift p-5">
+                    <strong class="text-white text-[13.5px]">Desk Sharing Ratio: What's the Optimal Number in 2026?</strong>
+                    <p class="text-[11px] text-blue-400/80 mt-1 mb-3">YAROOMS</p>
+                    <a href="https://www.yarooms.com/blog/desk-sharing-ratio" target="_blank" class="ref-link text-[12.5px]">Open Article →</a>
+                </div>
+                <div class="glass lift p-5">
+                    <strong class="text-white text-[13.5px]">Desk Sharing Guide: Policy, Software & 90-Day Rollout</strong>
+                    <p class="text-[11px] text-blue-400/80 mt-1 mb-3">Skedda</p>
+                    <a href="https://www.skedda.com/blog/desk-sharing-guide" target="_blank" class="ref-link text-[12.5px]">Open Article →</a>
+                </div>
+                <div class="glass lift p-5">
+                    <strong class="text-white text-[13.5px]">Desk sharing: Best practices for hybrid offices</strong>
+                    <p class="text-[11px] text-blue-400/80 mt-1 mb-3">Deskbird</p>
+                    <a href="https://www.deskbird.com/blog/desk-sharing-best-practices" target="_blank" class="ref-link text-[12.5px]">Open Article →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCENARIOS ==================== -->
+    <div id="section-scenarios" class="section">
+        <div class="glass glass-static spotlight p-6 md:p-7 mb-8 anim-fade-up">
+            <h2 class="text-2xl font-bold text-white mb-2.5 flex items-center gap-3">
+                <span class="accent-bar" style="height:26px;"></span>
+                Scenario Explanations
+            </h2>
+            <p class="text-[13px] text-slate-400 mb-7">Three planning scenarios based on the <span class="kw">desk-sharing ratio</span> range of <span class="kw-num">0.6 – 0.75</span>.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass anim-slide-left d-1 p-6 border-t-2 border-t-blue-400">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/15 border border-blue-400/40 flex items-center justify-center text-2xl">✅</div>
+                        <div>
+                            <h3 class="text-[16px] font-bold text-blue-300">Best Case</h3>
+                            <p class="text-[11.5px] text-slate-400">1,200 Seats</p>
+                        </div>
+                    </div>
+                    <p class="text-[11.5px] text-blue-300 mb-3 font-semibold">Ratio: <span class="kw-num kw-num-alt" style="font-size:11px;">0.6 desks/employee</span></p>
+                    <p class="text-[13px] text-slate-300 mb-4 leading-relaxed"><span class="kw-blue">Aggressive sharing</span> scenario. High adoption of hoteling policy, excellent booking compliance, low peak-day overlap.</p>
+                    <ul class="text-[12px] text-slate-400 space-y-2">
+                        <li class="flex gap-2"><span class="text-blue-400">▸</span> Real estate cost <span class="kw">↓ ~40%</span></li>
+                        <li class="flex gap-2"><span class="text-blue-400">▸</span> Desk availability <span class="kw">~85% peak</span></li>
+                        <li class="flex gap-2"><span class="text-blue-400">▸</span> Requires <span class="kw">strong enforcement</span></li>
+                        <li class="flex gap-2"><span class="text-blue-400">▸</span> Mature hybrid culture needed</li>
+                    </ul>
+                </div>
+
+                <div class="glass anim-scale d-2 p-6 border-t-2 border-t-cyan-400">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/15 border border-cyan-400/40 flex items-center justify-center text-2xl">🎯</div>
+                        <div>
+                            <h3 class="text-[16px] font-bold text-cyan-300">Target</h3>
+                            <p class="text-[11.5px] text-slate-400">1,400 Seats</p>
+                        </div>
+                    </div>
+                    <p class="text-[11.5px] text-cyan-300 mb-3 font-semibold">Ratio: <span class="kw-num kw-num-cyan" style="font-size:11px;">0.7 desks/employee</span></p>
+                    <p class="text-[13px] text-slate-300 mb-4 leading-relaxed"><span class="kw-cyan">Recommended balance</span>. Includes <span class="kw">10–15% buffer</span> above peak demand. Balances cost efficiency with employee experience.</p>
+                    <ul class="text-[12px] text-slate-400 space-y-2">
+                        <li class="flex gap-2"><span class="text-cyan-400">▸</span> Peak occupancy <span class="kw">85–90%</span></li>
+                        <li class="flex gap-2"><span class="text-cyan-400">▸</span> Cost savings <span class="kw">~30%</span></li>
+                        <li class="flex gap-2"><span class="text-cyan-400">▸</span> Aligns with <span class="kw">JLL & CBRE</span></li>
+                        <li class="flex gap-2"><span class="text-cyan-400">▸</span> Best starting point</li>
+                    </ul>
+                </div>
+
+                <div class="glass anim-slide-right d-3 p-6 border-t-2 border-t-indigo-400">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-500/15 border border-indigo-400/40 flex items-center justify-center text-2xl">⚠️</div>
+                        <div>
+                            <h3 class="text-[16px] font-bold text-indigo-300">Worst Case</h3>
+                            <p class="text-[11.5px] text-slate-400">1,500 Seats</p>
+                        </div>
+                    </div>
+                    <p class="text-[11.5px] text-indigo-300 mb-3 font-semibold">Ratio: <span class="kw-num kw-num-indigo" style="font-size:11px;">0.75 desks/employee</span></p>
+                    <p class="text-[13px] text-slate-300 mb-4 leading-relaxed"><span class="kw-blue">Conservative over-provisioning</span>. Low adoption, resistance to sharing, or extreme peak clustering.</p>
+                    <ul class="text-[12px] text-slate-400 space-y-2">
+                        <li class="flex gap-2"><span class="text-indigo-400">▸</span> Cost <span class="kw">↓ only ~25%</span></li>
+                        <li class="flex gap-2"><span class="text-indigo-400">▸</span> Desk availability <span class="kw">~100%</span></li>
+                        <li class="flex gap-2"><span class="text-indigo-400">▸</span> Higher <span class="kw">utility costs</span></li>
+                        <li class="flex gap-2"><span class="text-indigo-400">▸</span> Risk of <span class="kw">"zombie desks"</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TRENDS ==================== -->
+    <div id="section-trends" class="section">
+        <div class="glass glass-static spotlight p-6 md:p-7 mb-8 anim-fade-up">
+            <h2 class="text-2xl font-bold text-white mb-2.5 flex items-center gap-3">
+                <span class="accent-bar" style="height:26px;"></span>
+                Weekly Occupancy Trends
+            </h2>
+            <p class="text-[13px] text-slate-400 mb-7">Understanding the <span class="kw">bimodal pattern</span> that drives desk-sharing ratios.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-7">
+                <div class="glass p-6 anim-slide-left d-1">
+                    <h3 class="text-[16px] font-semibold text-blue-300 mb-4">The Bimodal Pattern</h3>
+                    <p class="text-[13px] text-slate-300 leading-relaxed mb-4">
+                        Hybrid attendance is <strong class="text-white">not uniform</strong>. It follows a bimodal pattern: <span class="kw">Tuesday & Wednesday</span> peak, with <span class="kw-blue">Friday dropping sharply</span>. The weekly average (<span class="kw">50–60%</span>) hides real peak demand.
+                    </p>
+                    <p class="text-[13px] text-slate-300 leading-relaxed mb-4">
+                        For <span class="kw-num">2,000 employees</span> averaging 3 days/week → weekly avg <span class="kw">~60%</span>. But Tuesday hits <span class="kw-cyan">85–95%</span>. Size for average = run out. Size for 100% = over-provision.
+                    </p>
+                    <p class="text-[13px] text-slate-300 leading-relaxed">
+                        Solution: plan for <span class="kw">95th percentile peak + buffer</span> → the <span class="kw-num">0.6–0.75 ratio range</span>.
+                    </p>
+                </div>
+                <div class="glass p-6 anim-slide-right d-2">
+                    <h3 class="text-[16px] font-semibold text-cyan-300 mb-4">How Scenarios Change the Trend</h3>
+                    <div class="space-y-3.5">
+                        <div class="glass p-4 border-l-2 border-l-blue-400">
+                            <strong class="text-blue-300 text-[13px]">Best Case (1,200)</strong>
+                            <p class="text-[12px] text-slate-400 mt-1.5 leading-relaxed">Peak <span class="kw">~95% Tuesday</span>. Tight but workable with staggered arrivals. Friday drops to <span class="kw-blue">~40%</span>.</p>
+                        </div>
+                        <div class="glass p-4 border-l-2 border-l-cyan-400">
+                            <strong class="text-cyan-300 text-[13px]">Target (1,400)</strong>
+                            <p class="text-[12px] text-slate-400 mt-1.5 leading-relaxed">Peak <span class="kw">~90% Tuesday</span>. Healthy <span class="kw-cyan">10% buffer</span>. Friday <span class="kw-blue">~25–30%</span>.</p>
+                        </div>
+                        <div class="glass p-4 border-l-2 border-l-indigo-400">
+                            <strong class="text-indigo-300 text-[13px]">Worst Case (1,500)</strong>
+                            <p class="text-[12px] text-slate-400 mt-1.5 leading-relaxed">Peak <span class="kw">~75% Tuesday</span>. Underutilized most days. Friday <span class="kw-blue">~15%</span> "ghost town".</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-6 anim-fade-up d-3">
+                <h3 class="text-slate-100 font-semibold mb-5 flex items-center gap-3 text-[15px]">
+                    <span class="accent-bar"></span> All Scenarios Compared
+                </h3>
+                <div style="position:relative; height:300px; width:100%;">
+                    <canvas id="trendCompareChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TASKS / ACTION CENTER ==================== -->
+    <div id="section-tasks" class="section">
+        <div class="glass glass-static spotlight p-6 md:p-7 mb-8 anim-fade-up">
+            <h2 class="text-2xl font-bold text-white mb-2.5 flex items-center gap-3">
+                <span class="accent-bar" style="height:26px;"></span>
+                Action Center
+            </h2>
+            <p class="text-[13px] text-slate-400 mb-7">Call-to-action tasks for the <span class="kw">Facilities Team</span>. Click any action to trigger a toast confirmation.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="glass task-card p-6 anim-fade-up d-1">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="badge badge-pdf mb-2">HIGH PRIORITY</span>
+                            <h3 class="text-white font-semibold text-[14.5px] mt-2">Reconfigure NY Office Desks</h3>
+                        </div>
+                        <span class="text-2xl">🇺🇸</span>
+                    </div>
+                    <p class="text-[12.5px] text-slate-400 mb-4 leading-relaxed">New York rollout at only <span class="kw">10%</span> — needs immediate desk reduction from <span class="kw-num">500 → 350</span> (<span class="kw-blue">0.7 ratio</span>).</p>
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="triggerAction('NY reconfiguration task started')" class="cta-btn">▶ Start Task</button>
+                        <button onclick="triggerAction('NY task snoozed')" class="cta-btn cta-btn-outline">⏸ Snooze</button>
+                    </div>
+                </div>
+
+                <div class="glass task-card p-6 anim-fade-up d-2">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="badge badge-doi mb-2">IN PROGRESS</span>
+                            <h3 class="text-white font-semibold text-[14.5px] mt-2">London Hoteling Policy Training</h3>
+                        </div>
+                        <span class="text-2xl">🇬🇧</span>
+                    </div>
+                    <p class="text-[12.5px] text-slate-400 mb-4 leading-relaxed"><span class="kw">80% complete</span>. Schedule remaining manager training sessions and update <span class="kw-blue">WorkInSync knowledge base</span>.</p>
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="triggerAction('Training session scheduled')" class="cta-btn">📅 Schedule</button>
+                        <button onclick="triggerAction('Progress updated to 85%')" class="cta-btn cta-btn-outline">📈 Update %</button>
+                    </div>
+                </div>
+
+                <div class="glass task-card p-6 anim-fade-up d-3">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="badge badge-url mb-2">COMPLETED</span>
+                            <h3 class="text-white font-semibold text-[14.5px] mt-2">Bangalore Desk Reduction</h3>
+                        </div>
+                        <span class="text-2xl">🇮🇳</span>
+                    </div>
+                    <p class="text-[12.5px] text-slate-400 mb-4 leading-relaxed"><span class="kw">100% complete</span>. <span class="kw-num">700 → 500</span> desks deployed. Hoteling software live. All SLAs met.</p>
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="triggerAction('Viewing Bangalore audit report')" class="cta-btn cta-btn-outline">📄 View Report</button>
+                        <button onclick="triggerAction('Benchmark exported')" class="cta-btn cta-btn-outline">📊 Benchmark</button>
+                    </div>
+                </div>
+
+                <div class="glass task-card p-6 anim-fade-up d-4">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="badge badge-doi mb-2">BACKLOG</span>
+                            <h3 class="text-white font-semibold text-[14.5px] mt-2">Review Peak-Day Occupancy Data</h3>
+                        </div>
+                        <span class="text-2xl">📊</span>
+                    </div>
+                    <p class="text-[12.5px] text-slate-400 mb-4 leading-relaxed">Pull last <span class="kw">30 days</span> of booking data. Adjust desk ratios per office based on <span class="kw-blue">actual peak trends</span>.</p>
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="triggerAction('Pulling occupancy analytics...')" class="cta-btn cta-btn-blue">🔄 Refresh Data</button>
+                        <button onclick="triggerAction('Report shared with stakeholders')" class="cta-btn cta-btn-outline">📤 Share</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-6 mt-7 anim-fade-up d-5">
+                <h3 class="text-[15px] font-semibold text-blue-300 mb-4 flex items-center gap-2">📋 KPI Assessment Summary</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[13px] text-slate-300">
+                    <div>
+                        <h4 class="font-semibold text-white mb-2.5">Space Utilization</h4>
+                        <ul class="space-y-1.5 text-[12.5px]">
+                            <li class="flex gap-2"><span class="text-blue-400">▸</span> Peak-Day Desk Utilization: <span class="kw-num kw-num-alt" style="font-size:11px;">85–90%</span></li>
+                            <li class="flex gap-2"><span class="text-blue-400">▸</span> Average Weekly Utilization: <span class="kw-num kw-num-alt" style="font-size:11px;">55–65%</span></li>
+                            <li class="flex gap-2"><span class="text-blue-400">▸</span> Booking-to-Usage Ratio: <span class="kw-num kw-num-alt" style="font-size:11px;">&gt;85%</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-2.5">Financial & Experience</h4>
+                        <ul class="space-y-1.5 text-[12.5px]">
+                            <li class="flex gap-2"><span class="text-cyan-400">▸</span> Cost per Used Seat: <span class="kw-num kw-num-cyan" style="font-size:11px;">$4K–$8K/year</span></li>
+                            <li class="flex gap-2"><span class="text-cyan-400">▸</span> Desk Availability: <span class="kw-num kw-num-cyan" style="font-size:11px;">&gt;95%</span></li>
+                            <li class="flex gap-2"><span class="text-cyan-400">▸</span> Satisfaction Score: <span class="kw-num kw-num-cyan" style="font-size:11px;">&gt;4.0/5</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="glass glass-static spotlight anim-fade-up d-5 p-6 md:p-7 mt-8">
+        <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-3">
+            <span class="accent-bar"></span> Submission Summary
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-[13px] text-slate-300">
+            <div>
+                <h4 class="font-semibold text-blue-300 mb-3">Core Calculations</h4>
+                <ul class="space-y-2 text-[12.5px]">
+                    <li class="flex gap-2"><span class="text-blue-400">▸</span> <strong class="text-white">Desk Sharing Ratio:</strong> <span class="kw">0.6–0.75 desks/employee</span></li>
+                    <li class="flex gap-2"><span class="text-blue-400">▸</span> <strong class="text-white">Min Seats (1,200):</strong> <span class="kw-blue">2,000 × 0.6</span></li>
+                    <li class="flex gap-2"><span class="text-blue-400">▸</span> <strong class="text-white">Max Seats (1,500):</strong> <span class="kw-blue">2,000 × 0.75</span></li>
+                    <li class="flex gap-2"><span class="text-blue-400">▸</span> <strong class="text-white">Target Seats (1,400):</strong> <span class="kw-cyan">2,000 × 0.7</span></li>
+                    <li class="flex gap-2"><span class="text-blue-400">▸</span> <strong class="text-white">Peak-Day Planning:</strong> Size for <span class="kw">Tue–Thu</span></li>
+                    <li class="flex gap-2"><span class="text-blue-400">▸</span> <strong class="text-white">Buffer:</strong> <span class="kw">10–15% above peak</span></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold text-blue-300 mb-3">References</h4>
+                <ul class="space-y-2 text-[12.5px]">
+                    <li class="flex gap-2"><span class="text-cyan-400">▸</span> <span class="kw">JLL Global Occupancy Benchmark 2025</span></li>
+                    <li class="flex gap-2"><span class="text-cyan-400">▸</span> <span class="kw">CBRE Americas Occupier Survey 2025</span></li>
+                    <li class="flex gap-2"><span class="text-cyan-400">▸</span> <span class="kw">Kastle Systems Barometer 2025</span></li>
+                    <li class="flex gap-2"><span class="text-cyan-400">▸</span> <span class="kw">SAGE Scheduling Paper 2025</span></li>
+                    <li class="flex gap-2"><span class="text-cyan-400">▸</span> <span class="kw">Springer Hot-Desking Algorithm 2026</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">
+    <span class="text-green-400 text-lg font-bold">✓</span>
+    <span id="toast-msg">Action completed</span>
+</div>
+
+<script>
+    // ============ SCENARIO DATA ============
+    const scenarios = {
+        target: {
+            health: "14%", tasks: "12", workload: "0", progress: "14%", cost: "42%",
+            donutData: [1200, 1400, 1500],
+            occupancyData: [45, 90, 85, 80, 25],
+            costData: [5000, 6500],
+            expData: [95, 98, 85],
+            color: '#58a6ff'
+        },
+        best: {
+            health: "25%", tasks: "8", workload: "0", progress: "25%", cost: "55%",
+            donutData: [1200, 1200, 1500],
+            occupancyData: [60, 95, 90, 85, 40],
+            costData: [4000, 6500],
+            expData: [85, 95, 80],
+            color: '#388bfd'
+        },
+        worst: {
+            health: "5%", tasks: "20", workload: "5", progress: "5%", cost: "20%",
+            donutData: [1200, 1500, 1500],
+            occupancyData: [30, 75, 70, 65, 15],
+            costData: [6000, 6500],
+            expData: [100, 98, 90],
+            color: '#bc8cff'
+        }
+    };
+
+    Chart.defaults.color = '#8b949e';
+    Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+    Chart.defaults.font.size = 11;
+
+    const gridColor = 'rgba(240, 246, 252, 0.08)';
+
+    let seatDonutChart, occupancyLineChart, costBarChart, expBarChart, trendCompareChart;
+
+    function initCharts() {
+        // DONUT
+        const ctxDonut = document.getElementById('seatDonutChart').getContext('2d');
+        seatDonutChart = new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Min (1200)', 'Target (1400)', 'Max (1500)'],
+                datasets: [{
+                    data: [1200, 1400, 1500],
+                    backgroundColor: ['#1f6feb', '#58a6ff', '#bc8cff'],
+                    borderWidth: 0,
+                    hoverOffset: 12,
+                    hoverBorderColor: 'rgba(255, 255, 255, 0.3)',
+                    hoverBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, cutout: '72%',
+                animation: { animateRotate: true, animateScale: true, duration: 1400, easing: 'easeOutQuart' },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(1, 4, 9, 0.98)',
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        borderWidth: 1, padding: 12, cornerRadius: 8,
+                        titleColor: '#f0f6fc', bodyColor: '#c9d1d9'
+                    }
+                }
+            }
+        });
+
+        // OCCUPANCY LINE
+        const ctxLine = document.getElementById('occupancyLineChart').getContext('2d');
+        occupancyLineChart = new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                datasets: [{
+                    label: 'Occupancy %',
+                    data: [45, 90, 85, 80, 25],
+                    borderColor: '#58a6ff',
+                    backgroundColor: 'rgba(88, 166, 255, 0.12)',
+                    fill: true, tension: 0.45,
+                    pointRadius: 5, pointHoverRadius: 8,
+                    pointBackgroundColor: '#58a6ff',
+                    pointBorderColor: '#ffffff', pointBorderWidth: 2,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: 1600, easing: 'easeOutQuart' },
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 100, grid: { color: gridColor }, ticks: { color: '#8b949e' } },
+                    x: { grid: { display: false }, ticks: { color: '#8b949e' } }
+                }
+            }
+        });
+
+        // COST BAR
+        const ctxBar = document.getElementById('costBarChart').getContext('2d');
+        costBarChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Actual', 'Benchmark'],
+                datasets: [{
+                    data: [5000, 6500],
+                    backgroundColor: ['#1f6feb', '#30363d'],
+                    borderRadius: 6, borderSkipped: false,
+                    hoverBackgroundColor: ['#388bfd', '#484f58']
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: 1400, easing: 'easeOutBounce' },
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: '#8b949e' } },
+                    x: { grid: { display: false }, ticks: { color: '#8b949e' } }
+                }
+            }
+        });
+
+        // EXPERIENCE
+        const ctxExp = document.getElementById('expBarChart').getContext('2d');
+        expBarChart = new Chart(ctxExp, {
+            type: 'bar',
+            data: {
+                labels: ['Desk Avail.', 'Booking', 'Satisfaction'],
+                datasets: [{
+                    data: [95, 98, 85],
+                    backgroundColor: ['#1f6feb', '#388bfd', '#bc8cff'],
+                    borderRadius: 6, borderSkipped: false,
+                    hoverBackgroundColor: ['#388bfd', '#58a6ff', '#d2a8ff']
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: 1400, easing: 'easeOutQuart' },
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true, max: 100, grid: { color: gridColor }, ticks: { color: '#8b949e' } },
+                    y: { grid: { display: false }, ticks: { color: '#8b949e' } }
+                }
+            }
+        });
+
+        // TREND COMPARISON
+        const ctxTrend = document.getElementById('trendCompareChart').getContext('2d');
+        trendCompareChart = new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                datasets: [
+                    {
+                        label: 'Best Case (1,200)',
+                        data: [60, 95, 90, 85, 40],
+                        borderColor: '#388bfd',
+                        backgroundColor: 'rgba(56, 139, 253, 0.1)',
+                        fill: true, tension: 0.45,
+                        pointRadius: 5, pointHoverRadius: 8,
+                        pointBackgroundColor: '#388bfd',
+                        pointBorderColor: '#ffffff', pointBorderWidth: 2,
+                        borderWidth: 3
+                    },
+                    {
+                        label: 'Target (1,400)',
+                        data: [45, 90, 85, 80, 25],
+                        borderColor: '#58a6ff',
+                        backgroundColor: 'rgba(88, 166, 255, 0.1)',
+                        fill: true, tension: 0.45,
+                        pointRadius: 5, pointHoverRadius: 8,
+                        pointBackgroundColor: '#58a6ff',
+                        pointBorderColor: '#ffffff', pointBorderWidth: 2,
+                        borderWidth: 3
+                    },
+                    {
+                        label: 'Worst Case (1,500)',
+                        data: [30, 75, 70, 65, 15],
+                        borderColor: '#bc8cff',
+                        backgroundColor: 'rgba(188, 140, 255, 0.1)',
+                        fill: true, tension: 0.45,
+                        pointRadius: 5, pointHoverRadius: 8,
+                        pointBackgroundColor: '#bc8cff',
+                        pointBorderColor: '#ffffff', pointBorderWidth: 2,
+                        borderWidth: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: 1800, easing: 'easeOutQuart' },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#c9d1d9', usePointStyle: true, padding: 20,
+                            font: { size: 12, weight: '600' }
+                        }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, max: 100, grid: { color: gridColor }, ticks: { color: '#8b949e' } },
+                    x: { grid: { display: false }, ticks: { color: '#8b949e' } }
+                }
+            }
+        });
+    }
+
+    function updateScenario(key) {
+        const data = scenarios[key];
+        document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`btn-${key}`).classList.add('active');
+
+        ['health', 'tasks', 'workload', 'progress', 'cost'].forEach(k => {
+            const el = document.getElementById(`${k}-val`);
+            if (!el) return;
+            el.style.opacity = '0';
+            el.style.transform = 'scale(0.85)';
+            setTimeout(() => {
+                el.innerText = data[k];
+                el.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                el.style.opacity = '1';
+                el.style.transform = 'scale(1)';
+            }, 120);
+        });
+
+        seatDonutChart.data.datasets[0].data = data.donutData;
+        seatDonutChart.update();
+
+        occupancyLineChart.data.datasets[0].data = data.occupancyData;
+        occupancyLineChart.data.datasets[0].borderColor = data.color;
+        occupancyLineChart.data.datasets[0].backgroundColor = data.color + '22';
+        occupancyLineChart.data.datasets[0].pointBackgroundColor = data.color;
+        occupancyLineChart.update();
+
+        costBarChart.data.datasets[0].data = data.costData;
+        costBarChart.update();
+
+        expBarChart.data.datasets[0].data = data.expData;
+        expBarChart.update();
+
+        showToast(`Switched to ${key.toUpperCase()} scenario`);
+    }
+
+    function showSection(name) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`section-${name}`).classList.add('active');
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.getElementById(`nav-${name}`).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-msg').innerText = msg;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+    function triggerAction(msg) { showToast(msg); }
+
+    window.onload = () => { initCharts(); };
+</script>
+</body>
+</html>
+>>>>>>> 75ec0c4591b05a320896b745238f1653bf3cb9ca
