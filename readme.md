@@ -1,58 +1,105 @@
-# WorkInSync Hybrid Seat Planning
+# WorkInSync | Hybrid seat planning
 
-A small, browser-based planning dashboard for a straightforward workplace question: **how many desks should support 2,000 employees who come to the office three days a week across three locations?**
+A small planning dashboard for one practical question: **how many shared seats could support 2,000 employees who work in the office three days a week across three locations?**
 
-The short answer is **1,400 seats as a starting plan**. It reduces the dedicated-seat baseline by 600 desks while keeping 200 seats above the simple weekday-average attendance. The recommendation is a planning scenario, not a final lease or office-by-office allocation.
+The dashboard compares three seat plans, shows how the choice changes the weekday occupancy picture, and lists the checks to complete before changing office capacity.
 
-## The decision in numbers
+## Submission summary
 
-| Planning case | Seats | Seats per employee | Fewer than 2,000 dedicated desks | What it means |
-| --- | ---: | ---: | ---: | --- |
-| Lean | 1,200 | 0.60 | 800 (40%) | Matches the average weekday attendance; leaves no average-day cushion. Peak-day demand must be managed closely. |
-| **Recommended** | **1,400** | **0.70** | **600 (30%)** | Adds 200 seats above the average weekday attendance and gives a practical starting point for local validation. |
-| Conservative | 1,500 | 0.75 | 500 (25%) | Keeps more room for demand variation, with a smaller reduction in desk count. |
+The starting recommendation is **1,400 shared seats** across Bangalore, London, and New York. That is 0.70 seats per employee: **600 fewer desks** than a one-desk-per-person setup, while leaving **200 seats above the calculated weekday average of 1,200 people**.
 
-### Where the 1,200-person average comes from
+This is a portfolio-level planning case. The brief does not include attendance history or employee counts by office, so 1,400 is a scenario to validate, not a final office-by-office allocation. Check actual Tuesday-to-Thursday peaks, team schedules, and accessibility needs before reducing space.
 
-The brief assumes 2,000 employees each attend **3 days out of a 5-day work week**:
+## The numbers behind the choice
+
+The brief assumes that all 2,000 employees attend three days in a five-day week:
 
 ```text
-2,000 employees × 3 office days = 6,000 employee-days per week
+2,000 employees × 3 office days = 6,000 employee-days each week
 6,000 employee-days ÷ 5 weekdays = 1,200 people per weekday on average
-1,400 recommended seats − 1,200 average attendees = 200 seats above the average
-2,000 dedicated desks − 1,400 recommended seats = 600 fewer desks (30%)
 ```
 
-An average is not a peak forecast. If attendance clusters on Tuesday through Thursday, the busiest day can be materially higher than 1,200. The 1,400-seat case is therefore a **recommendation to validate**, not a claim that every office can safely operate at that number today. Before reducing space, compare several weeks of bookings and badge entries by location and weekday, account for teams that need to be onsite together, and preserve accessible and specialist workspaces.
+The weekday average helps set a baseline. It does not tell us how many people arrive on the busiest day.
 
-## What the dashboard shows
+| Plan | Calculation | Seats | Seats per employee | Fewer than 2,000 dedicated desks | Above weekday average |
+| --- | --- | ---: | ---: | ---: | ---: |
+| **Lean** | 2,000 × 0.60 | **1,200** | 0.60 | 800 (40%) | 0 |
+| **Recommended** | 2,000 × 0.70 | **1,400** | 0.70 | 600 (30%) | 200 |
+| **Conservative** | 2,000 × 0.75 | **1,500** | 0.75 | 500 (25%) | 300 |
 
-- **Dashboard:** the 2,000-person planning brief, the 1,400-seat recommendation, and the difference from a dedicated-seat setup.
-- **Scenario selector:** compare 1,200, 1,400, and 1,500 seats. The occupancy charts show illustrative weekday patterns to make the trade-offs visible; they are not company attendance data.
-- **Seat-footprint chart:** compares the selected scenario with 2,000 dedicated desks. It does not estimate rent or claim a specific cash saving.
-- **Experience guardrails:** suggested service targets for desk availability, booking use, and satisfaction. They are targets to discuss, not measured results.
-- **Trends and resources:** explain why a weekly average is not enough to set a seat count and provide links for further reading.
-- **Action center:** add one of four suggested workstreams or create a custom action, then mark it complete or reopen it. The action list is saved in this browser with `localStorage`; it does not sync to a task system or another device.
+![Comparison of Lean, Recommended, and Conservative seat plans against a 2,000-desk baseline](docs/seat-scenarios.svg)
 
-## Assumptions and limits
+### Why keep all three plans?
 
-This is a portfolio-level exercise built from the stated inputs: **2,000 employees, 3 offices, and 3 in-office days per employee each week**. It does not include employee counts by location, actual attendance history, floor plans, lease costs, room mix, team schedules, accessibility requirements, or WorkInSync customer data.
+- **Lean — 1,200 seats:** matches the weekday average and removes the most desks. It leaves no capacity above that average, so it depends on attendance being spread across the week. A busier day could exceed the plan.
+- **Recommended — 1,400 seats:** keeps 200 seats above the average and removes 600 desks from the 1:1 baseline. It is a balanced starting point, but each office’s peak still needs checking.
+- **Conservative — 1,500 seats:** keeps 300 seats above the average and removes 500 desks. It leaves more room for variation, with a smaller reduction in the dedicated-seat count.
 
-For that reason, the dashboard’s weekday curves and experience targets are illustrative. They help compare options, but should not be presented as observations. The 0.60–0.75 seat-to-employee range is a scenario range rather than a universal industry rule. A final recommendation should use each office’s observed peak demand and an agreed service buffer.
+The terms “lean,” “recommended,” and “conservative” describe these scenarios; they are not universal workplace standards.
 
-The plotted weekday curves are a worked example that distributes roughly **6,000 employee-days** across the week. The 1,200-seat case assumes attendance can be perfectly spread, so all seats are occupied each weekday on average; the 1,400- and 1,500-seat cases show different illustrative peaks. The displayed percentages are rounded. Replace these curves with actual local data before using them to make capacity decisions.
+## Weekday trend: how to read it
 
-One useful reference point is JLL’s *Global Occupancy Planning Benchmark Report 2025*, based on 99 organizations representing 745 million square feet. It reports global actual office utilization of 54% and a 79% utilization target. Those figures describe the report’s respondents; they are context for measuring utilization, not inputs to the 1,400-seat calculation. [Read the report (PDF)](https://www.jll.com/content/dam/legacy/jll-com/documents/pdf/research/global/25-insights-global-occupancy-planning-benchmark-report-2025.pdf).
+The line chart uses illustrative occupancy percentages to show what each seat plan could look like if roughly 6,000 employee-days were spread over the week. These are **worked examples, not observed attendance data**.
 
-CBRE’s 2025 Americas survey also illustrates the difference between average and peak conditions: 73% of respondents placed peak-day utilization in the 61–100% range, compared with 34% for average utilization. This is U.S.-focused survey context, not a direct estimate for the three offices in this exercise. [Read the survey](https://www.cbre.com/insights/reports/2025-americas-office-occupier-sentiment-survey).
+![Illustrative weekday occupancy trends for the three seat plans](docs/weekday-occupancy.svg)
 
-## Run locally
+- **Lean stays at 100% each weekday** in this example. The plan uses all 1,200 seats even on an average day, leaving no room for attendance to bunch up.
+- **Recommended peaks at 95%** on Tuesday through Thursday. Its example curve leaves a small peak-day cushion, but local booking and entry records must confirm whether 1,400 seats are enough.
+- **Conservative peaks at 90%** in the example. It has the largest seat buffer of the three plans and the smallest reduction from the 2,000-desk baseline.
 
-No build step or package installation is needed. Open `index.html` in a modern browser. The dashboard loads Tailwind CSS and Chart.js from CDNs, so an internet connection is required for styling and charts.
+The curves are rounded and constructed to represent the same weekly employee-day total. They explain the trade-off between average demand and busy days; they do not predict actual occupancy for any of the three offices.
 
-## Files
+## How the decision is built
 
-| File | Purpose |
+![Planning steps from the brief to a seat scenario and local validation](docs/decision-flow.svg)
+
+1. Start with the stated population and in-office rhythm.
+2. Convert weekly employee-days into a weekday average.
+3. Compare 0.60, 0.70, and 0.75 seats per employee.
+4. Validate the selected portfolio total against actual peak-day demand at each location.
+
+## What is in the dashboard
+
+- **Dashboard:** the submission summary, scenario controls, seat comparison, and selected-plan charts. Choosing a plan updates the seat count, recommendation, calculation, and charts.
+- **Sources:** research and practitioner reading, with direct links to the referenced material.
+- **Scenarios:** the trade-offs behind Lean, Recommended, and Conservative. Selecting a plan highlights it here.
+- **Trends:** a weekday comparison that emphasizes the selected plan while keeping the other two visible.
+- **Action plan:** add suggested workstreams or create a custom item, then mark it complete or reopen it. Items are saved in this browser only; they do not sync to another device or a task-management system.
+
+The dashboard suggests 95% desk availability, 85% booking use, and a 4.0/5 satisfaction floor as pilot guardrails. They are targets to consider, not reported company results.
+
+## Assumptions and checks before using the plan
+
+This exercise includes **2,000 employees, three offices, and three in-office days per employee each week**. It does not include office-level headcounts, booking or badge history, floor plans, lease costs, room mix, team schedules, or accessibility requirements.
+
+Before making a capacity or lease decision:
+
+- Compare several weeks of booking and badge-entry data by office and weekday.
+- Check Tuesday-to-Thursday peaks and whether teams need to be onsite together.
+- Keep accessible, specialist, and collaboration spaces in the plan.
+- Agree on a service buffer and pilot the booking rules before scaling changes.
+- Replace the illustrative curves with local data.
+
+The utilization benchmarks below give context for the questions to ask. They are not inputs to the seat calculations and should not be treated as forecasts for this portfolio.
+
+## References
+
+- JLL, [*Global Occupancy Planning Benchmark Report 2025*](https://www.jll.com/content/dam/legacy/jll-com/documents/pdf/research/global/25-insights-global-occupancy-planning-benchmark-report-2025.pdf). The dashboard cites the report’s 54% global actual utilization and 79% target across its respondents.
+- CBRE, [*2025 Americas Office Occupier Sentiment Survey*](https://www.cbre.com/insights/reports/2025-americas-office-occupier-sentiment-survey). Its peak-day findings offer U.S.-focused context, not an estimate for these offices.
+- Kastle Systems, [*Back-to-Work Barometer*](https://www.kastle.com/resource/kastle-back-to-work-barometer-hits-all-time-post-pandemic-highs/).
+- [Scheduling in Hybrid Work Environments](https://doi.org/10.1177/18479790261416541), *International Journal of Engineering Business Management*.
+- [Stable Hot-Desking Allocation Algorithm](https://doi.org/10.1007/s00170-025-17283-z), *International Journal of Advanced Manufacturing Technology*.
+
+## Run it locally
+
+No build step or package installation is required. Open `index.html` in a modern browser. The page loads Tailwind CSS and Chart.js from CDNs, so an internet connection is needed for styling and interactive charts.
+
+## Project files
+
+| File | What it contains |
 | --- | --- |
-| `index.html` | Single-page dashboard, scenario data, charts, and interactions |
-| `readme.md` | Recommendation, arithmetic, assumptions, and run instructions |
+| `index.html` | Dashboard, scenario calculations, charts, source links, and action-plan interactions |
+| `readme.md` | Submission summary, calculations, trend interpretation, assumptions, and run instructions |
+| `docs/seat-scenarios.svg` | Scalable comparison of the three seat plans |
+| `docs/weekday-occupancy.svg` | Illustrative weekday occupancy curves |
+| `docs/decision-flow.svg` | Short diagram of the planning logic |

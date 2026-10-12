@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="270" viewBox="0 0 960 270" role="img" aria-labelledby="title desc">
+  <title id="title">How the seat plan is built</title>
+  <desc id="desc">Start with workforce and attendance assumptions, calculate average weekday demand, compare seat scenarios, and validate against local peak data.</desc>
+  <rect width="960" height="270" rx="24" fill="#f4f7f6"/>
+  <text x="44" y="50" fill="#122b35" font-family="Arial, sans-serif" font-size="24" font-weight="700">From the brief to a plan you can validate</text>
+  <g font-family="Arial, sans-serif">
+    <rect x="44" y="92" width="190" height="118" rx="16" fill="#ffffff" stroke="#dce6e4" stroke-width="2"/>
+    <text x="64" y="126" fill="#087f78" font-size="12" font-weight="700">1 · INPUTS</text><text x="64" y="157" fill="#122b35" font-size="17" font-weight="700">2,000 people</text><text x="64" y="184" fill="#647a80" font-size="14">3 office days / week</text>
+    <path d="M246 151h38m-10-10 10 10-10 10" fill="none" stroke="#8aa09b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="296" y="92" width="190" height="118" rx="16" fill="#ffffff" stroke="#dce6e4" stroke-width="2"/>
+    <text x="316" y="126" fill="#087f78" font-size="12" font-weight="700">2 · AVERAGE</text><text x="316" y="157" fill="#122b35" font-size="15" font-weight="700">6,000 employee-days</text><text x="316" y="184" fill="#647a80" font-size="14">÷ 5 weekdays = 1,200</text>
+    <path d="M498 151h38m-10-10 10 10-10 10" fill="none" stroke="#8aa09b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="548" y="92" width="170" height="118" rx="16" fill="#e7f3f1" stroke="#087f78" stroke-width="2"/>
+    <text x="568" y="126" fill="#087f78" font-size="12" font-weight="700">3 · SCENARIOS</text><text x="568" y="157" fill="#122b35" font-size="17" font-weight="700">1,200 · 1,400</text><text x="568" y="184" fill="#647a80" font-size="14">or 1,500 seats</text>
+    <path d="M730 151h38m-10-10 10 10-10 10" fill="none" stroke="#8aa09b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="780" y="92" width="140" height="118" rx="16" fill="#ffffff" stroke="#dce6e4" stroke-width="2"/>
+    <text x="798" y="126" fill="#087f78" font-size="12" font-weight="700">4 · CHECK</text><text x="798" y="157" fill="#122b35" font-size="17" font-weight="700">Local peaks</text><text x="798" y="184" fill="#647a80" font-size="14">and access needs</text>
+  </g>
+  <text x="44" y="246" fill="#647a80" font-family="Arial, sans-serif" font-size="13">The weekday average is a starting point; actual busy-day data decides whether the plan is workable.</text>
+</svg>

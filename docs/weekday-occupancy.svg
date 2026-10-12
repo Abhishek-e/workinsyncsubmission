@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Illustrative weekday seat utilization</title>
+  <desc id="desc">Lean is at 100 percent Monday through Friday. Recommended is 60, 95, 95, 95, and 83.6 percent. Conservative is 60, 85, 90, 85, and 80 percent. Curves are illustrative, not measured attendance.</desc>
+  <rect width="960" height="540" rx="24" fill="#f4f7f6"/>
+  <text x="48" y="58" fill="#122b35" font-family="Arial, sans-serif" font-size="26" font-weight="700">A weekly average can hide the busy days</text>
+  <text x="48" y="88" fill="#647a80" font-family="Arial, sans-serif" font-size="15">Illustrative occupied-seat share by weekday · all three curves represent about 6,000 employee-days</text>
+  <g stroke="#dce6e4" stroke-width="1" font-family="Arial, sans-serif" fill="#647a80" font-size="12">
+    <line x1="110" y1="140" x2="850" y2="140"/><line x1="110" y1="220" x2="850" y2="220"/><line x1="110" y1="300" x2="850" y2="300"/><line x1="110" y1="380" x2="850" y2="380"/>
+    <text x="70" y="144" stroke="none">100%</text><text x="78" y="224" stroke="none">75%</text><text x="78" y="304" stroke="none">50%</text><text x="78" y="384" stroke="none">25%</text>
+  </g>
+  <g font-family="Arial, sans-serif" fill="#647a80" font-size="13" text-anchor="middle">
+    <text x="150" y="414">Mon</text><text x="325" y="414">Tue</text><text x="500" y="414">Wed</text><text x="675" y="414">Thu</text><text x="850" y="414">Fri</text>
+  </g>
+  <polyline points="150,140 325,140 500,140 675,140 850,140" fill="none" stroke="#e39a5c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="150,268 325,156 500,156 675,156 850,192" fill="none" stroke="#087f78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="150,268 325,188 500,172 675,188 850,204" fill="none" stroke="#7058a5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#e39a5c" stroke="#f4f7f6" stroke-width="3"><circle cx="150" cy="140" r="6"/><circle cx="325" cy="140" r="6"/><circle cx="500" cy="140" r="6"/><circle cx="675" cy="140" r="6"/><circle cx="850" cy="140" r="6"/></g>
+  <g fill="#087f78" stroke="#f4f7f6" stroke-width="3"><circle cx="150" cy="268" r="6"/><circle cx="325" cy="156" r="6"/><circle cx="500" cy="156" r="6"/><circle cx="675" cy="156" r="6"/><circle cx="850" cy="192" r="6"/></g>
+  <g fill="#7058a5" stroke="#f4f7f6" stroke-width="3"><circle cx="150" cy="268" r="6"/><circle cx="325" cy="188" r="6"/><circle cx="500" cy="172" r="6"/><circle cx="675" cy="188" r="6"/><circle cx="850" cy="204" r="6"/></g>
+  <g font-family="Arial, sans-serif" font-size="13" fill="#344f58">
+    <line x1="145" y1="462" x2="177" y2="462" stroke="#e39a5c" stroke-width="4"/><text x="188" y="467">Lean · 1,200 seats · peaks at 100%</text>
+    <line x1="444" y1="462" x2="476" y2="462" stroke="#087f78" stroke-width="4"/><text x="487" y="467">Recommended · 1,400 seats · peaks at 95%</text>
+    <line x1="145" y1="495" x2="177" y2="495" stroke="#7058a5" stroke-width="4"/><text x="188" y="500">Conservative · 1,500 seats · peaks at 90%</text>
+  </g>
+  <text x="48" y="526" fill="#647a80" font-family="Arial, sans-serif" font-size="12">Worked example only. Replace with actual bookings and badge-entry data before making space decisions.</text>
+</svg>
+

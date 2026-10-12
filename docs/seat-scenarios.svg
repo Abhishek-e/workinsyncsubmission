@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="500" viewBox="0 0 960 500" role="img" aria-labelledby="title desc">
+  <title id="title">Three shared-seat scenarios</title>
+  <desc id="desc">Lean 1,200 seats, Recommended 1,400 seats, and Conservative 1,500 seats compared with a baseline of 2,000 dedicated desks.</desc>
+  <rect width="960" height="500" rx="24" fill="#f4f7f6"/>
+  <text x="48" y="58" fill="#122b35" font-family="Arial, sans-serif" font-size="26" font-weight="700">Three seat plans, one clear trade-off</text>
+  <text x="48" y="88" fill="#647a80" font-family="Arial, sans-serif" font-size="15">Seat count compared with 2,000 dedicated desks · weekday average: 1,200 people</text>
+  <g font-family="Arial, sans-serif" font-size="12" fill="#647a80" text-anchor="middle">
+    <text x="280" y="132">0</text><text x="405" y="132">500</text><text x="530" y="132">1,000</text><text x="655" y="132">1,500</text><text x="780" y="132">2,000 seats</text>
+  </g>
+  <g stroke="#dce6e4" stroke-width="1">
+    <line x1="280" y1="145" x2="280" y2="405"/><line x1="405" y1="145" x2="405" y2="405"/><line x1="530" y1="145" x2="530" y2="405"/><line x1="655" y1="145" x2="655" y2="405"/><line x1="780" y1="145" x2="780" y2="405"/>
+  </g>
+  <g font-family="Arial, sans-serif">
+    <text x="48" y="196" fill="#122b35" font-size="17" font-weight="700">Lean</text><text x="48" y="220" fill="#647a80" font-size="13">0.60 seats / employee</text>
+    <rect x="280" y="170" width="300" height="40" rx="8" fill="#e39a5c"/><text x="592" y="196" fill="#122b35" font-size="16" font-weight="700">1,200</text><text x="710" y="196" fill="#647a80" font-size="13">800 fewer · 40%</text>
+    <text x="48" y="286" fill="#122b35" font-size="17" font-weight="700">Recommended</text><text x="48" y="310" fill="#647a80" font-size="13">0.70 seats / employee</text>
+    <rect x="280" y="260" width="350" height="40" rx="8" fill="#087f78"/><text x="642" y="286" fill="#122b35" font-size="16" font-weight="700">1,400</text><text x="760" y="286" fill="#647a80" font-size="13">600 fewer · 30%</text>
+    <text x="48" y="376" fill="#122b35" font-size="17" font-weight="700">Conservative</text><text x="48" y="400" fill="#647a80" font-size="13">0.75 seats / employee</text>
+    <rect x="280" y="350" width="375" height="40" rx="8" fill="#7058a5"/><text x="667" y="376" fill="#122b35" font-size="16" font-weight="700">1,500</text><text x="785" y="376" fill="#647a80" font-size="13">500 fewer · 25%</text>
+  </g>
+  <rect x="48" y="432" width="864" height="42" rx="12" fill="#e7f3f1"/>
+  <text x="68" y="458" fill="#086c67" font-family="Arial, sans-serif" font-size="14" font-weight="700">Recommended keeps 200 seats above the weekday average. Validate busy days with local data.</text>
+</svg>
